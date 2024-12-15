@@ -5,10 +5,10 @@ image: r8.im/turian/arxiv-llm-text
 build:
     gpu: false
     python_version: '3.11'
+    system_packages:
+        - wget
+        - perl
     run:
-        - apt-get update -qq
-        - DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends wget perl
-        - rm -rf /var/lib/apt/lists/*
         - wget -O /usr/local/bin/latexpand https://gitlab.com/latexpand/latexpand/-/raw/master/latexpand
         - chmod +x /usr/local/bin/latexpand
     python_packages:
