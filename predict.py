@@ -15,11 +15,17 @@ class Predictor(BasePredictor):
         """Setup runs once when the model is loaded"""
         # Check if latexpand is available
         try:
-            result = subprocess.run(["which", "latexpand"], capture_output=True, text=True)
+            result = subprocess.run(
+                ["which", "latexpand"], capture_output=True, text=True
+            )
             if result.returncode != 0:
                 # Try to find the package that should contain latexpand
-                pkg_result = subprocess.run(["dpkg", "-S", "latexpand"], capture_output=True, text=True)
-                raise RuntimeError(f"latexpand not found. Debug info:\nwhich output: {result.stderr}\ndpkg search: {pkg_result.stdout}\n{pkg_result.stderr}")
+                pkg_result = subprocess.run(
+                    ["dpkg", "-S", "latexpand"], capture_output=True, text=True
+                )
+                raise RuntimeError(
+                    f"latexpand not found. Debug info:\nwhich output: {result.stderr}\ndpkg search: {pkg_result.stdout}\n{pkg_result.stderr}"
+                )
         except subprocess.CalledProcessError as e:
             raise RuntimeError(f"Error checking for latexpand: {str(e)}")
 
@@ -105,7 +111,9 @@ class Predictor(BasePredictor):
             # Process input files to add .tex extensions only if not present
             with open(main_tex, "r", encoding="utf-8") as f:
                 content = f.read()
-            processed_content = re.sub(r"\\input{([^}]*?)(\.tex)?}", r"\\input{\1.tex}", content)
+            processed_content = re.sub(
+                r"\\input{([^}]*?)(\.tex)?}", r"\\input{\1.tex}", content
+            )
 
             processed_tex = os.path.join(temp_dir, "processed_main.tex")
             with open(processed_tex, "w", encoding="utf-8") as f:
