@@ -49,7 +49,7 @@ The model returns a single expanded LaTeX file named `[arxiv_id]_expanded.tex` c
    - Checks for common filenames (main.tex, paper.tex, etc.)
    - Looks for \documentclass declarations
    - Falls back to first .tex file if needed.
-4. **LaTeX Expansion**: Uses `latexpand` (installed via `texlive-extra-utils`) to resolve all includes and macros into a single file.
+4. **LaTeX Expansion**: Uses `latexpand` (downloaded directly from its repository) to resolve all includes and macros into a single file.
 5. **Cleanup**: Handles LaTeX-specific issues like missing .tex extensions in \input commands.
 
 ## Known Issues
