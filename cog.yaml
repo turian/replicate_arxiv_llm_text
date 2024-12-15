@@ -1,29 +1,29 @@
 ---
 build:
-    gpu: false
-    python_version: '3.11'
-    run:
-        - apt-get update -qq
+  gpu: false
+  python_version: '3.11'
+  environment:
+    MKTEXLSR: 'no'
+    TEXMFVAR: '/tmp/texmf-var'
+    TEXMFCONFIG: '/tmp/texmf-config'
+    HOMETEXMF: '/tmp/texmf-home'
+  run:
+    - mkdir -p $TEXMFVAR $TEXMFCONFIG $HOMETEXMF
 
-        # Set environment variables to prevent format generation
-        - export MKTEXLSR=no
-        - export TEXMFVAR=/tmp/texmf-var
-        - export TEXMFCONFIG=/tmp/texmf-config
-        - export HOMETEXMF=/tmp/texmf-home
-        - mkdir -p $TEXMFVAR $TEXMFCONFIG $HOMETEXMF
+    - apt-get update -qq
 
-        # Install minimal necessary packages without recommends
-        - DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends wget perl texlive-latex-base texlive-binaries
+    # Install minimal necessary packages without recommends
+    - DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends wget perl texlive-latex-base texlive-binaries
 
-        # Manually download latexpand
-        - wget -O /usr/local/bin/latexpand https://raw.githubusercontent.com/latex3/latex3/master/tools/latexpand/latexpand
-        - chmod +x /usr/local/bin/latexpand
+    # Manually download latexpand
+    - wget -O /usr/local/bin/latexpand https://raw.githubusercontent.com/latex3/latex3/master/tools/latexpand/latexpand
+    - chmod +x /usr/local/bin/latexpand
 
-        - rm -rf /var/lib/apt/lists/*
-    python_packages:
-        - requests
-        - beautifulsoup4
-        - arxiv
+    - rm -rf /var/lib/apt/lists/*
+  python_packages:
+    - requests
+    - beautifulsoup4
+    - arxiv
 
 predict: predict.py:Predictor
 ---
