@@ -60,8 +60,12 @@ The `build` section describes how to build the Docker image for your model. It i
     ```yaml
     build:
       run:
-        - export ENV_VAR=value
-        - apt-get update && apt-get install -y some-package
+        - mkdir -p /tmp/texmf-var /tmp/texmf-config /tmp/texmf-home
+        - MKTEXLSR=no TEXMFVAR=/tmp/texmf-var TEXMFCONFIG=/tmp/texmf-config HOMETEXMF=/tmp/texmf-home apt-get update -qq
+        - DEBIAN_FRONTEND=noninteractive MKTEXLSR=no TEXMFVAR=/tmp/texmf-var TEXMFCONFIG=/tmp/texmf-config HOMETEXMF=/tmp/texmf-home apt-get install -y --no-install-recommends wget perl texlive-latex-base texlive-binaries
+        - wget -O /usr/local/bin/latexpand https://raw.githubusercontent.com/latex3/latex3/master/tools/latexpand/latexpand
+        - chmod +x /usr/local/bin/latexpand
+        - rm -rf /var/lib/apt/lists/*
     ```
 
 #### **Setting Environment Variables**
@@ -92,6 +96,26 @@ The `build` section describes how to build the Docker image for your model. It i
 - **Explanation:**
   - Environment variables `VAR1` and `VAR2` are set only for the duration of `command_here`.
   - This method ensures variables are available when needed without affecting other commands.
+
+#### **Command Syntax Constraints**
+
+- **Single-Line Commands:**
+  - Each command in the `run` list **must be a single-line string**.
+  - **Multi-line commands or commands containing newlines are not supported.**
+- **No Comments in Commands:**
+  - **Comments (lines starting with `#`) are not allowed** within the `run` commands.
+  - Place any necessary comments or explanations **outside the `run` commands**, in your documentation or as comments in other sections of `cog.yaml`.
+- **Setting Environment Variables Inline:**
+  - Include environment variables inline at the beginning of each command.
+  - **Example:**
+    ```yaml
+    build:
+      run:
+        - VAR1=value1 VAR2=value2 command_here arg1 arg2
+    ```
+  - **Explanation:**
+    - Environment variables `VAR1` and `VAR2` are set only for the duration of `command_here`.
+    - Ensure all variables and the command are on the same line.
 
 ## `image`
 
