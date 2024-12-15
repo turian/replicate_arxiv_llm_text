@@ -1,13 +1,15 @@
+---
 build:
-  gpu: false
-  python_version: "3.11"
-  system_packages:
-    - wget
-    - tar
-    - texlive-base
-  python_packages:
-    - requests
-    - beautifulsoup4
-    - arxiv
+    gpu: false
+    python_version: '3.11'
+    system_packages:
+        - wget
+        - tar
+        - texlive-base
+    python_packages:
+        - requests
+        - beautifulsoup4
+        - arxiv
 
-predict: "predict.py:Predictor"
+
+predict: predict.py:Predictor
