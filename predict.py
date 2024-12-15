@@ -72,7 +72,10 @@ class Predictor(BasePredictor):
         self,
         arxiv_url: str = Input(description="arXiv URL (abs/pdf/html)"),
         include_figures: bool = Input(
-            description="Include figure files in expansion", default=False
+            description="Include figure definitions in the output.", default=False
+        ),
+        include_comments: bool = Input(
+            description="Include comments in the expanded LaTeX output.", default=True
         ),
     ) -> Path:
         """Run prediction on an arXiv paper"""
@@ -108,13 +111,19 @@ class Predictor(BasePredictor):
             with open(processed_tex, "w", encoding="utf-8") as f:
                 f.write(processed_content)
 
-            # Run latexpand from the directory where the LaTeX files are located
-            output_path = os.path.join(temp_dir, "expanded.tex")
+            # Build the latexpand command
             cmd = ["latexpand"]
+
+            if include_comments:
+                cmd.append("--keep-comments")
+
             if not include_figures:
                 cmd.append("--empty-comments")
-            cmd.extend(["--keep-comments", processed_tex])
 
+            cmd.append(processed_tex)
+
+            # Run latexpand from the directory where the LaTeX files are located
+            output_path = os.path.join(temp_dir, "expanded.tex")
             with open(output_path, "w") as f:
                 subprocess.run(cmd, stdout=f, check=True, cwd=extract_dir)
 

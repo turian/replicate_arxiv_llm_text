@@ -23,7 +23,8 @@ output = replicate.run(
     "username/replicate_arxiv_llm_text:version",
     input={
         "arxiv_url": "https://arxiv.org/abs/2004.10151",
-        "include_figures": False
+        "include_figures": False,
+        "include_comments": True
     }
 )
 ```
@@ -33,7 +34,7 @@ output = replicate.run(
 You can test the model locally using the `cog predict` command after building the Docker image:
 
 ```bash
-cog predict -i arxiv_url="https://arxiv.org/abs/2004.10151" -i include_figures=false
+cog predict -i arxiv_url="https://arxiv.org/abs/2004.10151" -i include_figures=false -i include_comments=true
 ```
 
 This command will run the model on the given arXiv paper and output the expanded LaTeX file in your current directory.
@@ -46,6 +47,7 @@ This command will run the model on the given arXiv paper and output the expanded
   - HTML: `https://arxiv.org/html/2004.10151`
   - ar5iv: `https://ar5iv.org/abs/2004.10151`
 - `include_figures`: Boolean, default `False`. Whether to include figure definitions in the output.
+- `include_comments`: Boolean, default `True`. Whether to include comments in the expanded LaTeX output.
 
 ### Output
 
@@ -59,8 +61,23 @@ The model returns a single expanded LaTeX file named `[arxiv_id]_expanded.tex` c
    - Checks for common filenames (main.tex, paper.tex, etc.)
    - Looks for \documentclass declarations
    - Falls back to first .tex file if needed.
-4. **LaTeX Expansion**: Uses `latexpand` (downloaded directly from its repository) to resolve all includes and macros into a single file.
+4. **LaTeX Expansion**: Uses `latexpand` (downloaded directly from its repository) to resolve all includes and macros into a single file. Since we're not expanding `\usepackage{...}` directives, `latexpand` doesn't require `kpsewhich`, reducing dependencies and simplifying the build process.
 5. **Cleanup**: Handles LaTeX-specific issues like missing .tex extensions in \input commands.
+
+### Additional Notes on `latexpand`
+
+- **Behavior with Style Files (`.sty`):**
+
+  Since we're not expanding style files by avoiding `--expand-usepackage`, `latexpand` doesn't need to locate `.sty` files, eliminating the need for `kpsewhich`.
+
+- **Handling of Comments:**
+
+  By default, `latexpand` strips comments unless the `--keep-comments` option is used. We've added the `include_comments` parameter to control this behavior, giving users flexibility.
+
+- **Known Glitches or Interesting Behaviors:**
+
+  - **Environment Variable `TEXINPUTS`:** `latexpand` uses the `TEXINPUTS` environment variable to locate LaTeX files. In our use case, we rely on the current directory, simplifying file resolution.
+  - **Importance of `--empty-comments`:** When `include_figures` is `False`, we use `--empty-comments` to handle comments correctly without including figure definitions.
 
 ## Known Issues
 
@@ -89,6 +106,15 @@ The model returns a single expanded LaTeX file named `[arxiv_id]_expanded.tex` c
 
   This ensures the environment variables are available for that specific command without relying on `export`.
 
----
+### Limitations of `latexpand`
 
+While `latexpand` is powerful, there are some known limitations:
+
+- **Verbatim Environments**: `latexpand` may not handle `\begin{verbatim}...\end{verbatim}` blocks correctly, especially concerning comments and included files within verbatim environments.
+- **Comments in Verbatim**: Comments inside verbatim environments might be stripped out even when comments are intended to be part of the verbatim text.
+- **Processing Commands Inside Verbatim**: `latexpand` might process `\input` and `\include` commands inside verbatim environments, which is usually undesirable.
+
+**Note**: Users should be cautious when processing documents that heavily utilize verbatim or special LaTeX environments. Review the expanded output for any inconsistencies.
+
+---
 *Further technical details and troubleshooting steps will be added after resolving current issues.*
