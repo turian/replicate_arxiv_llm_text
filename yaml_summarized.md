@@ -50,8 +50,11 @@ The `build` section describes how to build the Docker image for your model. It i
     ```yaml
     build:
       system_packages:
-        - git
-        - ffmpeg
+        - wget
+        - perl
+        - texlive-latex-base
+        - texlive-binaries
+        - texlive-extra-utils
     ```
 
 - **`run`** (list of strings or dictionaries):
@@ -62,9 +65,7 @@ The `build` section describes how to build the Docker image for your model. It i
       run:
         - mkdir -p /tmp/texmf-var /tmp/texmf-config /tmp/texmf-home
         - MKTEXLSR=no TEXMFVAR=/tmp/texmf-var TEXMFCONFIG=/tmp/texmf-config HOMETEXMF=/tmp/texmf-home apt-get update -qq
-        - DEBIAN_FRONTEND=noninteractive MKTEXLSR=no TEXMFVAR=/tmp/texmf-var TEXMFCONFIG=/tmp/texmf-config HOMETEXMF=/tmp/texmf-home apt-get install -y --no-install-recommends wget perl texlive-latex-base texlive-binaries
-        - wget -O /usr/local/bin/latexpand https://raw.githubusercontent.com/latex3/latex3/master/tools/latexpand/latexpand
-        - chmod +x /usr/local/bin/latexpand
+        - DEBIAN_FRONTEND=noninteractive MKTEXLSR=no TEXMFVAR=/tmp/texmf-var TEXMFCONFIG=/tmp/texmf-config HOMETEXMF=/tmp/texmf-home apt-get install -y --no-install-recommends wget perl texlive-latex-base texlive-binaries texlive-extra-utils
         - rm -rf /var/lib/apt/lists/*
     ```
 
