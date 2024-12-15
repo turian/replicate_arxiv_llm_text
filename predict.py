@@ -20,6 +20,8 @@ class Predictor(BasePredictor):
                 # Try to find the package that should contain latexpand
                 pkg_result = subprocess.run(["dpkg", "-S", "latexpand"], capture_output=True, text=True)
                 raise RuntimeError(f"latexpand not found. Debug info:\nwhich output: {result.stderr}\ndpkg search: {pkg_result.stdout}\n{pkg_result.stderr}")
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"Error checking for latexpand: {str(e)}")
 
     def extract_arxiv_id(self, url):
         """Extract arXiv ID from various URL formats"""
