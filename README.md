@@ -2,9 +2,9 @@
 
 [![Replicate](https://img.shields.io/badge/Replicate-arXiv__LLM__Text-blue?logo=Replicate&style=flat-square)](https://replicate.com/turian/arxiv-llm-text)
 
-This code was written using [Aider](https://aider.chat/).
-
 **Purpose:** Prepare arXiv papers for processing by Large Language Models (LLMs) by converting them into a single, expanded LaTeX file.
+
+This code was written using [Aider](https://aider.chat/).
 
 ## Overview
 
