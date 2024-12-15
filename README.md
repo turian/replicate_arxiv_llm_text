@@ -130,16 +130,14 @@ The model requires `latexpand` which is provided by the `texlive-extra-utils` pa
        2. Using --no-install-recommends to minimize dependencies
        3. Adding explicit configuration steps between installations
 
-If you encounter installation issues:
-1. Ensure sufficient system resources (at least 2GB RAM, 1GB disk space)
-2. Install packages in this specific order:
-   ```
-   texlive-base
-   texlive-binaries
-   texlive-extra-utils
-   ```
-3. Allow each package to fully configure before installing the next
-4. Use minimal TeX installation to avoid format building complexity
+#### Attempted Fix and Hypothesis
+
+We tried setting `DEBIAN_FRONTEND=noninteractive` during the `apt-get install` command and combining the TeX Live package installations to prevent the `fmtutil failed` error during format generation. However, this did not resolve the issue.
+
+**Hypothesis on Failure:**
+
+- The `tex-common` package attempts to build TeX formats during installation. In a container environment, this process can fail due to missing dependencies or limited resources.
+- Setting `DEBIAN_FRONTEND=noninteractive` alone does not prevent format generation. Additional configurations are needed to skip or defer this step during installation.
 
 ## Limitations
 

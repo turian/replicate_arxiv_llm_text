@@ -8,14 +8,14 @@ build:
         - texlive-base
         - texlive-binaries
         - texlive-extra-utils
+    environment:
+        FMTUTIL_SYS_ACTION: 'ignore'
     run:
         - apt-get update -qq
-        - DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends wget tar texlive-base texlive-binaries texlive-extra-utils
         - rm -rf /var/lib/apt/lists/*
     python_packages:
         - requests
         - beautifulsoup4
         - arxiv
-
 
 predict: predict.py:Predictor
