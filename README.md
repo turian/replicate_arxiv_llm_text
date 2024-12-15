@@ -22,7 +22,7 @@ import replicate
 output = replicate.run(
     "username/replicate_arxiv_llm_text:version",
     input={
-        "arxiv_url": "https://arxiv.org/abs/2312.00000",
+        "arxiv_url": "https://arxiv.org/abs/2004.10151",
         "include_figures": False
     }
 )
@@ -31,10 +31,10 @@ output = replicate.run(
 ### Input Parameters
 
 - `arxiv_url`: Any arXiv URL format is accepted:
-  - Abstract page: `https://arxiv.org/abs/2312.00000`
-  - PDF: `https://arxiv.org/pdf/2312.00000.pdf`
-  - HTML: `https://arxiv.org/html/2312.00000`
-  - ar5iv: `https://ar5iv.org/abs/2312.00000`
+  - Abstract page: `https://arxiv.org/abs/2004.10151`
+  - PDF: `https://arxiv.org/pdf/2004.10151.pdf`
+  - HTML: `https://arxiv.org/html/2004.10151`
+  - ar5iv: `https://ar5iv.org/abs/2004.10151`
 - `include_figures`: Boolean, default `False`. Whether to include figure definitions in the output.
 
 ### Output
@@ -96,7 +96,7 @@ cog build
 
 3. Test the model locally:
 ```bash
-cog predict -i arxiv_url="https://arxiv.org/abs/2312.00000"
+cog predict -i arxiv_url="https://arxiv.org/abs/2004.10151"
 ```
 
 ### Deployment
