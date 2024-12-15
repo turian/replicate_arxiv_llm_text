@@ -68,6 +68,30 @@ Built using:
 - `latexpand` for LaTeX processing
 - Minimal texlive installation for LaTeX handling
 
+### Package Installation Notes
+
+The model requires `latexpand` which is provided by the `texlive-extra-utils` package. Getting the right combination of TeX packages installed was challenging:
+
+1. Initial attempts:
+   - `texlive-latex-recommended` alone: Missing `latexpand`
+   - `texlive-binaries`: Basic TeX tools but no `latexpand`
+   - Full `texlive` installation: Too large, caused build timeouts
+
+2. Issues encountered:
+   - Format building failures during tex-common configuration
+   - Dependency conflicts between TeX packages
+   - Missing format files causing post-installation errors
+
+3. Working solution:
+   - Minimal set: `texlive-base`, `texlive-binaries`, `texlive-extra-utils`
+   - Removed `texlive-latex-recommended` to avoid format building issues
+   - Order of installation matters to prevent dependency conflicts
+
+If you encounter "fmtutil failed" errors or "tex-common configuration failed", try:
+- Ensuring sufficient disk space and memory for format building
+- Installing packages in correct dependency order
+- Using minimal TeX installation to avoid format building complexity
+
 ## Limitations
 
 - Requires papers to have source files available on arXiv
