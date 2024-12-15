@@ -4,22 +4,36 @@ build:
   python_version: '3.11'
   run:
     - |
-      # Set environment variables and create directories
-      export MKTEXLSR=no
-      export TEXMFVAR=/tmp/texmf-var
-      export TEXMFCONFIG=/tmp/texmf-config
-      export HOMETEXMF=/tmp/texmf-home
-      mkdir -p $TEXMFVAR $TEXMFCONFIG $HOMETEXMF
+      # Create necessary directories
+      mkdir -p /tmp/texmf-var /tmp/texmf-config /tmp/texmf-home
 
+    - |
+      # Update package lists with environment variables set inline
+      MKTEXLSR=no \
+      TEXMFVAR=/tmp/texmf-var \
+      TEXMFCONFIG=/tmp/texmf-config \
+      HOMETEXMF=/tmp/texmf-home \
       apt-get update -qq
 
-      # Install minimal necessary packages without recommends
-      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends wget perl texlive-latex-base texlive-binaries
+    - |
+      # Install packages with environment variables set inline
+      DEBIAN_FRONTEND=noninteractive \
+      MKTEXLSR=no \
+      TEXMFVAR=/tmp/texmf-var \
+      TEXMFCONFIG=/tmp/texmf-config \
+      HOMETEXMF=/tmp/texmf-home \
+      apt-get install -y --no-install-recommends wget perl texlive-latex-base texlive-binaries
 
+    - |
       # Manually download latexpand
       wget -O /usr/local/bin/latexpand https://raw.githubusercontent.com/latex3/latex3/master/tools/latexpand/latexpand
+
+    - |
+      # Make latexpand executable
       chmod +x /usr/local/bin/latexpand
 
+    - |
+      # Clean up
       rm -rf /var/lib/apt/lists/*
 
   python_packages:

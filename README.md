@@ -56,7 +56,7 @@ The model returns a single expanded LaTeX file named `[arxiv_id]_expanded.tex` c
 
 - **Environment Variables in `cog.yaml`:**
 
-  The `environment` key is not supported in `cog.yaml`, which causes a build error when attempting to set environment variables globally during the Docker image build process.
+  The `environment` key is not supported in `cog.yaml`, and using `export` within the `run` section does not persist variables across commands. This can cause issues when environment variables are needed during the build process.
 
   *Error Message:*
 
@@ -65,9 +65,19 @@ The model returns a single expanded LaTeX file named `[arxiv_id]_expanded.tex` c
   Additional property environment is not allowed.
   ```
 
-  *Current Workaround:*
+  *Solution:*
 
-  We are exploring alternative methods to set necessary environment variables without using the `environment` key. This may involve setting environment variables within the `run` section or consolidating commands to ensure variables are available when needed.
+  To set environment variables in `cog.yaml`, include them inline at the beginning of each command that requires them.
+
+  **Example:**
+
+  ```yaml
+  build:
+    run:
+      - VAR1=value1 VAR2=value2 command_here arg1 arg2
+  ```
+
+  This ensures the environment variables are available for that specific command without relying on `export`.
 
 ---
 

@@ -64,6 +64,35 @@ The `build` section describes how to build the Docker image for your model. It i
         - apt-get update && apt-get install -y some-package
     ```
 
+#### **Setting Environment Variables**
+
+- **Purpose:** Include environment variables inline in the commands within the `run` section.
+- **Note:** Using `export` may not work as expected because each command in the `run` section is executed in a separate shell environment.
+- **How to Set Variables Inline:** Prepend the variables to the command, separated by spaces.
+
+- **Example:**
+
+  ```yaml
+  build:
+    run:
+      - VAR1=value1 VAR2=value2 command_here arg1 arg2
+  ```
+
+- **Multiline Command Example:**
+
+  ```yaml
+  build:
+    run:
+      - |
+        VAR1=value1 \
+        VAR2=value2 \
+        command_here arg1 arg2
+  ```
+
+- **Explanation:**
+  - Environment variables `VAR1` and `VAR2` are set only for the duration of `command_here`.
+  - This method ensures variables are available when needed without affecting other commands.
+
 ## `image`
 
 - **`image`** (string):
