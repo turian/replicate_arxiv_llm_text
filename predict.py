@@ -79,7 +79,7 @@ class Predictor(BasePredictor):
             file_list = [os.path.relpath(f, directory) for f in documentclass_files]
             raise ValueError(
                 f"Multiple main TeX files found: {file_list}. "
-                "Please specify the main file using the 'main_file' parameter."
+                "Please ensure your submission contains a uniquely identifiable main TeX file."
             )
 
         # 3. If all else fails, take the first .tex file
@@ -93,10 +93,6 @@ class Predictor(BasePredictor):
         ),
         include_comments: bool = Input(
             description="Include comments in the expanded LaTeX output.", default=True
-        ),
-        main_file: str = Input(
-            description="(Optional) Specify the main TeX file if multiple are found or to override detection.",
-            default="",
         ),
     ) -> Path:
         """Run prediction on an arXiv paper"""
@@ -120,13 +116,8 @@ class Predictor(BasePredictor):
             os.makedirs(extract_dir)
             subprocess.run(["tar", "xf", archive_path, "-C", extract_dir], check=True)
 
-            # Find main TeX file
-            if main_file:
-                main_tex = os.path.join(extract_dir, main_file)
-                if not os.path.isfile(main_tex):
-                    raise ValueError(f"Specified main file '{main_file}' not found.")
-            else:
-                main_tex = self.find_main_tex_file(extract_dir)
+            # Directly find the main TeX file using the heuristic
+            main_tex = self.find_main_tex_file(extract_dir)
 
             # Process input files to add .tex extensions only if not present
             with open(main_tex, "r", encoding="utf-8") as f:

@@ -27,7 +27,6 @@ output = replicate.run(
         "arxiv_url": "https://arxiv.org/abs/2004.10151",
         "include_figures": False,
         "include_comments": True,
-        "main_file": "main.tex"  # Optional
     }
 )
 ```
@@ -40,18 +39,17 @@ output = replicate.run(
   - HTML: `https://arxiv.org/html/2004.10151`
 - `include_figures`: Boolean, default `False`. Whether to include figure definitions in the output.
 - `include_comments`: Boolean, default `True`. Whether to include comments in the expanded LaTeX output.
-- `main_file`: (Optional) Specify the main TeX file if multiple are found or to override detection. Provide the relative path within the source archive.
 
 ## Known Behaviors and Limitations
 
 - **Multiple Main Files Found:**
-  - If multiple possible main `.tex` files are found (e.g., several files containing `\documentclass`), the model will **fail by default** to prevent unintended behavior.
+  - If multiple possible main `.tex` files are found (e.g., several files containing `\documentclass`), the model will **fail** to prevent unintended behavior.
   - **What Happens:**
     - The model raises an error indicating that multiple main files were detected, and it's ambiguous which one to use.
   - **Recommended Action:**
-    - Users should specify the main file manually using the `main_file` parameter or ensure their arXiv submission contains a clearly named main file (e.g., `main.tex`).
-  - **Future Enhancements:**
-    - An option may be introduced to allow users to select from multiple main files or return a tarball of possible main files for manual selection.
+    - Users should ensure their arXiv submission contains a uniquely identifiable main TeX file, typically named `main.tex` or similar.
+  - **Note:**
+    - The model no longer accepts a `main_file` parameter to specify the main TeX file.
 
 - **Behavior of `latexpand`:**
   - **No TeX Dependencies Required:**
@@ -66,7 +64,7 @@ output = replicate.run(
 
 - **Glitches in Our Code:**
   - The heuristic for finding the main TeX file may fail if the paper's structure is unconventional.
-  - Users may need to adjust their submissions or specify the main file manually if the model cannot automatically determine the main file.
+  - Users may need to adjust their submissions or ensure their arXiv submission contains a uniquely identifiable main TeX file.
 
 - **Glitches in `latexpand`:**
   - Special environments or macros may not be expanded as expected.
