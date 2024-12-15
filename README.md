@@ -1,3 +1,7 @@
+![arXiv LLM Text Logo](./arxiv_llm_text.webp)
+
+[![Replicate](https://img.shields.io/badge/Replicate-arXiv__LLM__Text-blue?logo=Replicate&style=flat-square)](https://replicate.com/turian/arxiv-llm-text)
+
 # replicate_arxiv_llm_text
 
 **Purpose:** Prepare arXiv papers for processing by Large Language Models (LLMs) by converting them into a single, expanded LaTeX file.
@@ -15,21 +19,9 @@
 
 ## Usage
 
-You can use this model through the Replicate API or web interface:
+You can use this model directly on Replicate:
 
-```python
-import replicate
-
-# Run the model
-output = replicate.run(
-    "username/replicate_arxiv_llm_text:version",
-    input={
-        "arxiv_url": "https://arxiv.org/abs/2004.10151",
-        "include_figures": False,
-        "include_comments": True,
-    }
-)
-```
+[https://replicate.com/turian/arxiv-llm-text](https://replicate.com/turian/arxiv-llm-text)
 
 ### Input Parameters
 
