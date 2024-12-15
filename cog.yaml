@@ -4,9 +4,8 @@ build:
   gpu: false
   python_version: '3.11'
   run:
-    - mkdir -p /tmp/texmf-var /tmp/texmf-config /tmp/texmf-home
-    - MKTEXLSR=no TEXMFVAR=/tmp/texmf-var TEXMFCONFIG=/tmp/texmf-config HOMETEXMF=/tmp/texmf-home apt-get update -qq
-    - DEBIAN_FRONTEND=noninteractive MKTEXLSR=no TEXMFVAR=/tmp/texmf-var TEXMFCONFIG=/tmp/texmf-config HOMETEXMF=/tmp/texmf-home apt-get install -y --no-install-recommends wget perl texlive-latex-base
+    - apt-get update -qq
+    - DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends wget perl
     - rm -rf /var/lib/apt/lists/*
     - wget -O /usr/local/bin/latexpand https://gitlab.com/latexpand/latexpand/-/raw/master/latexpand
     - chmod +x /usr/local/bin/latexpand
