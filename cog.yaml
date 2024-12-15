@@ -5,9 +5,12 @@ build:
     system_packages:
         - wget
         - tar
-        - texlive-base
-        - texlive-binaries
-        - texlive-extra-utils
+    run:
+        - apt-get update -qq
+        - apt-get install -y --no-install-recommends texlive-base
+        - apt-get install -y --no-install-recommends texlive-binaries
+        - apt-get install -y --no-install-recommends texlive-extra-utils
+        - rm -rf /var/lib/apt/lists/*
     python_packages:
         - requests
         - beautifulsoup4

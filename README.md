@@ -87,10 +87,32 @@ The model requires `latexpand` which is provided by the `texlive-extra-utils` pa
    - Removed `texlive-latex-recommended` to avoid format building issues
    - Order of installation matters to prevent dependency conflicts
 
-If you encounter "fmtutil failed" errors or "tex-common configuration failed", try:
-- Ensuring sufficient disk space and memory for format building
-- Installing packages in correct dependency order
-- Using minimal TeX installation to avoid format building complexity
+4. Common Installation Issues:
+   - "fmtutil failed" error during tex-common configuration:
+     * Caused by format building failing during package installation
+     * Often occurs when tex-common tries to build formats before texlive-base is fully configured
+     * Solution: Install packages in correct order and ensure proper configuration sequence
+   
+   - Format building failures:
+     * Can occur due to insufficient memory or disk space
+     * May happen if TeX packages are installed simultaneously
+     * Solution: Install packages sequentially with proper configuration steps
+
+   - Package dependency conflicts:
+     * texlive-base needs to be fully configured before other packages
+     * tex-common configuration can fail if run too early
+     * Solution: Use --no-install-recommends and install packages one at a time
+
+If you encounter installation issues:
+1. Ensure sufficient system resources (at least 2GB RAM, 1GB disk space)
+2. Install packages in this specific order:
+   ```
+   texlive-base
+   texlive-binaries
+   texlive-extra-utils
+   ```
+3. Allow each package to fully configure before installing the next
+4. Use minimal TeX installation to avoid format building complexity
 
 ## Limitations
 
