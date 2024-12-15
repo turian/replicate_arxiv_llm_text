@@ -5,8 +5,8 @@ build:
     system_packages:
         - wget
         - tar
-        - texlive-latex-base
-        - texlive-latex-recommended
+        - texlive-base
+        - texlive-binaries
         - texlive-extra-utils
     python_packages:
         - requests
