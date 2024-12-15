@@ -10,4 +10,4 @@ build:
     - beautifulsoup4
     - arxiv
 
-predict: "predict.py"
+predict: "predict.py:Predictor"
