@@ -5,8 +5,9 @@ build:
     system_packages:
         - wget
         - tar
-        - texlive-binaries
         - texlive-latex-base
+        - texlive-latex-recommended
+        - texlive-extra-utils
     python_packages:
         - requests
         - beautifulsoup4

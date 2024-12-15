@@ -15,9 +15,11 @@ class Predictor(BasePredictor):
         """Setup runs once when the model is loaded"""
         # Check if latexpand is available
         try:
-            subprocess.run(["which", "latexpand"], check=True, capture_output=True)
-        except subprocess.CalledProcessError:
-            raise RuntimeError("latexpand not found. Please install texlive-extra-utils")
+            result = subprocess.run(["which", "latexpand"], capture_output=True, text=True)
+            if result.returncode != 0:
+                # Try to find the package that should contain latexpand
+                pkg_result = subprocess.run(["dpkg", "-S", "latexpand"], capture_output=True, text=True)
+                raise RuntimeError(f"latexpand not found. Debug info:\nwhich output: {result.stderr}\ndpkg search: {pkg_result.stdout}\n{pkg_result.stderr}")
 
     def extract_arxiv_id(self, url):
         """Extract arXiv ID from various URL formats"""
