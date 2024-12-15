@@ -99,16 +99,16 @@ class Predictor(BasePredictor):
             # Find main TeX file
             main_tex = self.find_main_tex_file(extract_dir)
 
-            # Process input files to add .tex extensions
+            # Process input files to add .tex extensions only if not present
             with open(main_tex, "r", encoding="utf-8") as f:
                 content = f.read()
-            processed_content = re.sub(r"\\input{([^}]*)}", r"\\input{\1.tex}", content)
+            processed_content = re.sub(r"\\input{([^}]*?)(\.tex)?}", r"\\input{\1.tex}", content)
 
             processed_tex = os.path.join(temp_dir, "processed_main.tex")
             with open(processed_tex, "w", encoding="utf-8") as f:
                 f.write(processed_content)
 
-            # Run latexpand
+            # Run latexpand from the directory where the LaTeX files are located
             output_path = os.path.join(temp_dir, "expanded.tex")
             cmd = ["latexpand"]
             if not include_figures:
@@ -116,7 +116,7 @@ class Predictor(BasePredictor):
             cmd.extend(["--keep-comments", processed_tex])
 
             with open(output_path, "w") as f:
-                subprocess.run(cmd, stdout=f, check=True)
+                subprocess.run(cmd, stdout=f, check=True, cwd=extract_dir)
 
             # Copy to output directory
             output_dir = Path(os.getcwd())
