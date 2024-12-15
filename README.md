@@ -79,6 +79,38 @@ Built using:
 
 Apache 2.0
 
+## Development
+
+### Local Testing
+
+1. Install Cog:
+```bash
+curl -o /usr/local/bin/cog -L https://github.com/replicate/cog/releases/latest/download/cog_`uname -s`_`uname -m`
+chmod +x /usr/local/bin/cog
+```
+
+2. Build the model:
+```bash
+cog build
+```
+
+3. Test the model locally:
+```bash
+cog predict -i arxiv_url="https://arxiv.org/abs/2312.00000"
+```
+
+### Deployment
+
+1. Log in to Replicate:
+```bash
+cog login
+```
+
+2. Push the model:
+```bash
+cog push r8.im/username/replicate_arxiv_llm_text
+```
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
