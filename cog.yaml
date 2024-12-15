@@ -7,9 +7,16 @@ build:
         - tar
     run:
         - apt-get update -qq
+        - mkdir -p /tmp/texmf-var /tmp/texmf-config
+        - export TEXMFVAR=/tmp/texmf-var
+        - export TEXMFCONFIG=/tmp/texmf-config
         - apt-get install -y --no-install-recommends texlive-base
+        - texconfig init || true
+        - mktexlsr || true
         - apt-get install -y --no-install-recommends texlive-binaries
+        - fmtutil-sys --all || true
         - apt-get install -y --no-install-recommends texlive-extra-utils
+        - updmap-sys || true
         - rm -rf /var/lib/apt/lists/*
     python_packages:
         - requests

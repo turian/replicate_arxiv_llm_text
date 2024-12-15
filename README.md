@@ -91,17 +91,44 @@ The model requires `latexpand` which is provided by the `texlive-extra-utils` pa
    - "fmtutil failed" error during tex-common configuration:
      * Caused by format building failing during package installation
      * Often occurs when tex-common tries to build formats before texlive-base is fully configured
-     * Solution: Install packages in correct order and ensure proper configuration sequence
+     * Multiple attempts to resolve:
+       1. Sequential installation (partially successful but still fails)
+       2. Using --no-install-recommends (reduces dependencies but format building still fails)
+       3. Adding explicit format initialization steps (mixed results)
    
-   - Format building failures:
-     * Can occur due to insufficient memory or disk space
-     * May happen if TeX packages are installed simultaneously
-     * Solution: Install packages sequentially with proper configuration steps
+   - Format building failures investigation:
+     * Error occurs during 'Building format(s) --all' step
+     * Typical failure pattern:
+       1. mktexlsr completes successfully
+       2. updmap-sys completes successfully
+       3. Format building fails after ~25-30 seconds
+     * Root causes identified:
+       1. Race condition between tex-common and texlive-base configuration
+       2. Format building timing out in container environment
+       3. Insufficient system resources during format generation
+   
+   - Current workarounds being tested:
+     * Pre-building formats before package installation
+     * Using minimal format set instead of --all
+     * Explicit format initialization between package installations
+     * Setting specific environment variables:
+       ```
+       export TEXMFVAR=/tmp/texmf-var
+       export TEXMFCONFIG=/tmp/texmf-config
+       ```
+     * Adding post-installation verification steps:
+       ```
+       texconfig init
+       fmtutil-sys --all
+       ```
 
    - Package dependency conflicts:
      * texlive-base needs to be fully configured before other packages
      * tex-common configuration can fail if run too early
-     * Solution: Use --no-install-recommends and install packages one at a time
+     * Attempted solutions:
+       1. Installing packages one at a time with verification
+       2. Using --no-install-recommends to minimize dependencies
+       3. Adding explicit configuration steps between installations
 
 If you encounter installation issues:
 1. Ensure sufficient system resources (at least 2GB RAM, 1GB disk space)
