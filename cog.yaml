@@ -4,7 +4,21 @@ build:
     python_version: '3.11'
     run:
         - apt-get update -qq
-        - DEBIAN_FRONTEND=noninteractive FMTUTIL_SYS_ACTION=skip apt-get install -y wget tar texlive-base texlive-binaries texlive-extra-utils
+
+        # Set environment variables to prevent format generation
+        - export MKTEXLSR=no
+        - export TEXMFVAR=/tmp/texmf-var
+        - export TEXMFCONFIG=/tmp/texmf-config
+        - export HOMETEXMF=/tmp/texmf-home
+        - mkdir -p $TEXMFVAR $TEXMFCONFIG $HOMETEXMF
+
+        # Install minimal necessary packages without recommends
+        - DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends wget perl texlive-latex-base texlive-binaries
+
+        # Manually download latexpand
+        - wget -O /usr/local/bin/latexpand https://raw.githubusercontent.com/latex3/latex3/master/tools/latexpand/latexpand
+        - chmod +x /usr/local/bin/latexpand
+
         - rm -rf /var/lib/apt/lists/*
     python_packages:
         - requests

@@ -68,76 +68,45 @@ Built using:
 - `latexpand` for LaTeX processing
 - Minimal texlive installation for LaTeX handling
 
-### Package Installation Notes
+### Updated Package Installation Notes
 
-The model requires `latexpand` which is provided by the `texlive-extra-utils` package. Getting the right combination of TeX packages installed was challenging:
+Due to installation issues with TeX Live packages inside Docker (specifically, `fmtutil` failures during `tex-common` configuration), we've adjusted the installation approach:
 
-1. Initial attempts:
-   - `texlive-latex-recommended` alone: Missing `latexpand`
-   - `texlive-binaries`: Basic TeX tools but no `latexpand`
-   - Full `texlive` installation: Too large, caused build timeouts
+- **Disabled Format Generation:**
 
-2. Issues encountered:
-   - Format building failures during tex-common configuration
-   - Dependency conflicts between TeX packages
-   - Missing format files causing post-installation errors
+  Set environment variables to prevent format generation during package installation. This avoids `fmtutil` errors that occur when TeX tries to build formats in a non-interactive environment.
 
-3. Working solution:
-   - Minimal set: `texlive-base`, `texlive-binaries`, `texlive-extra-utils`
-   - Use `DEBIAN_FRONTEND=noninteractive` to prevent format building during installation
-   - Combined installation command for efficiency and dependency handling
+  ```bash
+  export MKTEXLSR=no
+  export TEXMFVAR=/tmp/texmf-var
+  export TEXMFCONFIG=/tmp/texmf-config
+  export HOMETEXMF=/tmp/texmf-home
+  mkdir -p $TEXMFVAR $TEXMFCONFIG $HOMETEXMF
+  ```
 
-4. Common Installation Issues:
-   - "fmtutil failed" error during tex-common configuration:
-     * Caused by format building failing during package installation
-     * Often occurs when tex-common tries to build formats before texlive-base is fully configured
-     * Multiple attempts to resolve:
-       1. Sequential installation (partially successful but still fails)
-       2. Using --no-install-recommends (reduces dependencies but format building still fails)
-       3. Adding explicit format initialization steps (mixed results)
-   
-   - Format building failures investigation:
-     * Error occurs during 'Building format(s) --all' step
-     * Typical failure pattern:
-       1. mktexlsr completes successfully
-       2. updmap-sys completes successfully
-       3. Format building fails after ~25-30 seconds
-     * Root causes identified:
-       1. Race condition between tex-common and texlive-base configuration
-       2. Format building timing out in container environment
-       3. Insufficient system resources during format generation
-   
-   - Current workarounds being tested:
-     * Pre-building formats before package installation
-     * Using minimal format set instead of --all
-     * Explicit format initialization between package installations
-     * Setting specific environment variables:
-       ```
-       export TEXMFVAR=/tmp/texmf-var
-       export TEXMFCONFIG=/tmp/texmf-config
-       ```
-     * Adding post-installation verification steps:
-       ```
-       texconfig init
-       fmtutil-sys --all
-       ```
-   
-   - Package dependency conflicts:
-     * texlive-base needs to be fully configured before other packages
-     * tex-common configuration can fail if run too early
-     * Attempted solutions:
-       1. Installing packages one at a time with verification
-       2. Using --no-install-recommends to minimize dependencies
-       3. Adding explicit configuration steps between installations
+- **Minimal TeX Live Installation:**
 
-#### Attempted Fix and Hypothesis
+  Installed only `texlive-latex-base` and `texlive-binaries` with `--no-install-recommends` to get the essential tools (`kpsewhich`) needed by `latexpand`.
 
-We tried setting `DEBIAN_FRONTEND=noninteractive` during the `apt-get install` command and combining the TeX Live package installations to prevent the `fmtutil failed` error during format generation. However, this did not resolve the issue.
+  ```bash
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends wget perl texlive-latex-base texlive-binaries
+  ```
 
-**Hypothesis on Failure:**
+- **Manual Installation of `latexpand`:**
 
-- The `tex-common` package attempts to build TeX formats during installation. In a container environment, this process can fail due to missing dependencies or limited resources.
-- Setting `DEBIAN_FRONTEND=noninteractive` alone does not prevent format generation. Additional configurations are needed to skip or defer this step during installation.
+  Downloaded `latexpand` directly from its GitHub repository and installed it manually.
+
+  ```bash
+  wget -O /usr/local/bin/latexpand https://raw.githubusercontent.com/latex3/latex3/master/tools/latexpand/latexpand
+  chmod +x /usr/local/bin/latexpand
+  ```
+
+- **Benefits:**
+  - Reduced image size by avoiding unnecessary packages.
+  - Avoided complicated TeX Live installation scripts that can fail in containerized environments.
+  - Simplified the Docker build process, making it more reliable.
+
+**Note:** If further issues are encountered, consider exploring Python-based solutions for LaTeX expansion to avoid TeX Live dependencies altogether.
 
 ## Limitations
 
