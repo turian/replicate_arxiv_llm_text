@@ -28,6 +28,16 @@ output = replicate.run(
 )
 ```
 
+### Testing Locally with `cog predict`
+
+You can test the model locally using the `cog predict` command after building the Docker image:
+
+```bash
+cog predict -i arxiv_url="https://arxiv.org/abs/2004.10151" -i include_figures=false
+```
+
+This command will run the model on the given arXiv paper and output the expanded LaTeX file in your current directory.
+
 ### Input Parameters
 
 - `arxiv_url`: Any arXiv URL format is accepted:
