@@ -96,7 +96,8 @@ class Predictor(BasePredictor):
             description="Include comments in the expanded LaTeX output.", default=True
         ),
         main_file: Optional[str] = Input(
-            description="(Optional) Specify the main TeX file if multiple are found or to override detection.", default=None
+            description="(Optional) Specify the main TeX file if multiple are found or to override detection.",
+            default=None,
         ),
     ) -> Path:
         """Run prediction on an arXiv paper"""
