@@ -1,8 +1,8 @@
-![arXiv LLM Text Logo](./arxiv_llm_text.webp)
+# replicate_arxiv_llm_text
 
 [![Replicate](https://img.shields.io/badge/Replicate-arXiv__LLM__Text-blue?logo=Replicate&style=flat-square)](https://replicate.com/turian/arxiv-llm-text)
 
-# replicate_arxiv_llm_text
+This code was written using [Aider](https://aider.chat/).
 
 **Purpose:** Prepare arXiv papers for processing by Large Language Models (LLMs) by converting them into a single, expanded LaTeX file.
 
@@ -66,3 +66,4 @@ You can use this model directly on Replicate:
 
 - The model returns a single expanded LaTeX file named `[arxiv_id]_expanded.tex` containing the complete paper content with all includes resolved.
 
+![arXiv LLM Text Logo](./arxiv_llm_text.webp)
