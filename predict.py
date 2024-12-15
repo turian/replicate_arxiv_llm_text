@@ -2,7 +2,6 @@ import os
 import re
 import subprocess
 import tempfile
-from typing import Optional
 from urllib.parse import urlparse
 
 import arxiv
@@ -95,9 +94,9 @@ class Predictor(BasePredictor):
         include_comments: bool = Input(
             description="Include comments in the expanded LaTeX output.", default=True
         ),
-        main_file: Optional[str] = Input(
+        main_file: str = Input(
             description="(Optional) Specify the main TeX file if multiple are found or to override detection.",
-            default=None,
+            default="",
         ),
     ) -> Path:
         """Run prediction on an arXiv paper"""
