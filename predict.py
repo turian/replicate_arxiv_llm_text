@@ -2,6 +2,7 @@ import os
 import re
 import subprocess
 import tempfile
+from typing import Optional
 from urllib.parse import urlparse
 
 import arxiv
@@ -64,12 +65,23 @@ class Predictor(BasePredictor):
             if name in [os.path.basename(f) for f in tex_files]:
                 return next(f for f in tex_files if os.path.basename(f) == name)
 
-        # 2. Look for file with \documentclass
+        # 2. Look for files with \documentclass
+        documentclass_files = []
         for tex_file in tex_files:
             with open(tex_file, "r", encoding="utf-8") as f:
                 content = f.read()
                 if "\\documentclass" in content:
-                    return tex_file
+                    documentclass_files.append(tex_file)
+
+        if len(documentclass_files) == 1:
+            return documentclass_files[0]
+        elif len(documentclass_files) > 1:
+            # Fail due to ambiguity
+            file_list = [os.path.relpath(f, directory) for f in documentclass_files]
+            raise ValueError(
+                f"Multiple main TeX files found: {file_list}. "
+                "Please specify the main file using the 'main_file' parameter."
+            )
 
         # 3. If all else fails, take the first .tex file
         return tex_files[0]
@@ -82,6 +94,9 @@ class Predictor(BasePredictor):
         ),
         include_comments: bool = Input(
             description="Include comments in the expanded LaTeX output.", default=True
+        ),
+        main_file: Optional[str] = Input(
+            description="(Optional) Specify the main TeX file if multiple are found or to override detection.", default=None
         ),
     ) -> Path:
         """Run prediction on an arXiv paper"""
@@ -106,7 +121,12 @@ class Predictor(BasePredictor):
             subprocess.run(["tar", "xf", archive_path, "-C", extract_dir], check=True)
 
             # Find main TeX file
-            main_tex = self.find_main_tex_file(extract_dir)
+            if main_file:
+                main_tex = os.path.join(extract_dir, main_file)
+                if not os.path.isfile(main_tex):
+                    raise ValueError(f"Specified main file '{main_file}' not found.")
+            else:
+                main_tex = self.find_main_tex_file(extract_dir)
 
             # Process input files to add .tex extensions only if not present
             with open(main_tex, "r", encoding="utf-8") as f:
