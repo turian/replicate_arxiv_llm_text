@@ -6,6 +6,7 @@ build:
         - wget
         - tar
         - texlive-base
+        - texlive-extra-utils
     python_packages:
         - requests
         - beautifulsoup4

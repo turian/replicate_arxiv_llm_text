@@ -13,7 +13,11 @@ from cog import BasePredictor, Input, Path
 class Predictor(BasePredictor):
     def setup(self):
         """Setup runs once when the model is loaded"""
-        pass
+        # Check if latexpand is available
+        try:
+            subprocess.run(["which", "latexpand"], check=True, capture_output=True)
+        except subprocess.CalledProcessError:
+            raise RuntimeError("latexpand not found. Please install texlive-extra-utils")
 
     def extract_arxiv_id(self, url):
         """Extract arXiv ID from various URL formats"""
