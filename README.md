@@ -84,8 +84,8 @@ The model requires `latexpand` which is provided by the `texlive-extra-utils` pa
 
 3. Working solution:
    - Minimal set: `texlive-base`, `texlive-binaries`, `texlive-extra-utils`
-   - Removed `texlive-latex-recommended` to avoid format building issues
-   - Order of installation matters to prevent dependency conflicts
+   - Use `DEBIAN_FRONTEND=noninteractive` to prevent format building during installation
+   - Combined installation command for efficiency and dependency handling
 
 4. Common Installation Issues:
    - "fmtutil failed" error during tex-common configuration:
@@ -121,7 +121,7 @@ The model requires `latexpand` which is provided by the `texlive-extra-utils` pa
        texconfig init
        fmtutil-sys --all
        ```
-
+   
    - Package dependency conflicts:
      * texlive-base needs to be fully configured before other packages
      * tex-common configuration can fail if run too early
